@@ -59,7 +59,13 @@ class Galaxian {
     }
 
     fun setEnemySpeed(speed : Float) {
-        return 
+        if (speed > 0) { // always going down so speed cant be neg
+            for (enemy in enemyList) {
+                val direc = if (Random.nextBoolean()) 1 else -1
+                enemy.dx = direc * speed
+                enemy.dy = speed
+            }
+        }
     }
 
     fun setShipCord(w : Float, h : Float) {
