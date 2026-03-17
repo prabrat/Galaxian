@@ -21,6 +21,7 @@ class Galaxian {
     private var bulletY = 0f
     private var fired = false
     private var bulletSpeed = -5f // neg is going up i guess
+    private var bulletRect : Rect? = null
 
 
     data class Enemy (
@@ -28,7 +29,7 @@ class Galaxian {
         var y : Float,
         var dx : Float = 0f, // Horizonatal speed
         var dy : Float = 0f, // Vertical spped
-        var rect : Rect? = null,
+        var rect : Rect = Rect(), // had to change it from Rect? = null cus was getting an error when doing rect.set 
         var alive : Boolean = true
     )
 
@@ -72,4 +73,30 @@ class Galaxian {
         shipX = w / 2
         shipY = h - 50f
     }
+
+    fun updateEnemies(w : Float, h: Float) {
+        // did enemy hit wall?
+        for (enemy in enemyList) {
+            if (enemy.alive) continue // check enemy even alive otw it dont matter
+            enemy.x += enemy.dx
+            enemy.y += enemy.dy
+
+            if (enemy.x <= 0 || (enemy.x + enemySize) >= w) {
+                enemy.dx *= (-1) // flip direction
+            }
+
+            if (enemy.y > h) {
+                enemy.y = 0f
+            }
+
+            enemy.rect.set(
+                enemy.x.toInt(),
+                enemy.y.toInt(),
+                (enemy.x + enemySize).toInt(),
+                (enemy.y + enemySize).toInt()
+            )
+        }
+    }
+
+
 }
