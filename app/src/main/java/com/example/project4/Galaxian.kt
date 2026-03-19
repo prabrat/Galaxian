@@ -15,13 +15,14 @@ class Galaxian {
     private var shipX = 0f
     private var shipY = 0f
     private var shipAlive = true
+    private var shipRect  : Rect = Rect()
 
     private var bulletSize = 5
     private var bulletX = 0f
     private var bulletY = 0f
     private var fired = false
     private var bulletSpeed = -5f // neg is going up i guess
-    private var bulletRect : Rect? = null
+    private var bulletRect : Rect = Rect()
 
 
     data class Enemy (
@@ -98,5 +99,34 @@ class Galaxian {
         }
     }
 
+    fun updateBullet() {
+        if (!fired) return
+        bulletY += bulletSpeed
+        bulletRect.set(
+            bulletX.toInt(),
+            bulletY.toInt(),
+            (bulletX + bulletSize).toInt(),
+            (bulletY + bulletSize).toInt()
+        )
+    }
 
+    fun checkBulletHits() {
+        for (enemy in enemyList) {
+            if (enemy.alive && Rect.intersects(bulletRect, enemy.rect)) {
+                enemy.alive = false
+                destroyed++
+                fired = false
+            }
+        }
+    }
+
+    fun checkShipCollision() {
+        if (!shipAlive) return
+        for (enemy in enemyList) {
+            if (enemy.alive && Rect.intersects(enemy.rect, shipRect)) {
+                shipAlive = false
+                enemy.alive = false
+            }
+        }
+    }
 }
