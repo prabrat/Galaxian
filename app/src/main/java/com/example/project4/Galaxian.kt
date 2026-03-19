@@ -11,6 +11,7 @@ class Galaxian (private val context: Context){
     private var enemyRect : Rect? = null
     private var destroyed = 0
     private var status = ""
+    private var gameOver = false
 
     private var shipW = 50f // random height
     private var shipH = 50f // random width
@@ -47,6 +48,7 @@ class Galaxian (private val context: Context){
         setEnemySpeed(initES)
 
         setShipCord(screenW, screenH)
+        updateShipRect()
         shipAlive = true
         fired = false
     }
@@ -77,6 +79,15 @@ class Galaxian (private val context: Context){
         shipY = h - 50f
     }
 
+    fun updateShipRect() {
+        shipRect.set(
+            shipX.toInt(),
+            shipY.toInt(),
+            (shipX + shipW).toInt(),
+            (shipY + shipH).toInt()
+        )
+    }
+
     fun updateEnemies(w : Float, h: Float) {
         // did enemy hit wall?
         for (enemy in enemyList) {
@@ -104,6 +115,12 @@ class Galaxian (private val context: Context){
     fun updateBullet() {
         if (!fired) return
         bulletY += bulletSpeed
+
+        if (bulletY < 0) {
+            fired = false
+            bulletX = shipX
+            bulletY = shipY
+        }
         bulletRect.set(
             bulletX.toInt(),
             bulletY.toInt(),
@@ -118,18 +135,22 @@ class Galaxian (private val context: Context){
                 enemy.alive = false
                 destroyed++
                 fired = false
+                bulletX = shipX
+                bulletY = shipY
             }
         }
     }
 
     fun checkShipCollision() {
+        updateShipRect() // just making sure the ship is where its supposed to be
         if (!shipAlive) return
         for (enemy in enemyList) {
             if (enemy.alive && Rect.intersects(enemy.rect, shipRect)) {
                 shipAlive = false
                 enemy.alive = false
                 status = "YOU LOST !!"
-                saveStats()
+                gameOver = true
+                saveScore()
             }
         }
     }
@@ -138,18 +159,27 @@ class Galaxian (private val context: Context){
         val allDead = enemyList.all { !it.alive } // are all enemies are dead
         if (allDead) {
             status = "YOU WON !!"
-            saveStats()
+            gameOver = true
+            saveScore()
         }
         return allDead
     }
 
-    private fun saveStats() {
+    fun update(w: Float, h: Float) {
+        updateShipRect()
+        updateEnemies(w, h)
+        updateBullet()
+        checkBulletHits()
+        checkShipCollision()
+        checkWin()
+    }
+
+    private fun saveScore() {
         val sp = context.getSharedPreferences("galaxian", Context.MODE_PRIVATE)
         val best = sp.getInt("bestScore", 0)
         if (destroyed > best) {
             sp.edit().putInt("bestScore", destroyed).apply()
         }
-        sp.edit().putString("status", status).apply()
     }
 
     fun getBestScore() : Int {
@@ -157,8 +187,11 @@ class Galaxian (private val context: Context){
         return sp.getInt("bestScore", 0)
     }
 
-    fun getStatus() : String? {
-        val sp = context.getSharedPreferences("galaxian", Context.MODE_PRIVATE)
-        return sp.getString("status", "")
+    fun getStatus() : String {
+        return status
+    }
+
+    fun gameOver() : Boolean {
+        return gameOver
     }
 }
