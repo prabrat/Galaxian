@@ -1,14 +1,16 @@
 package com.example.project4
 
+import android.content.Context
 import android.graphics.Rect
 import kotlin.random.Random
 
-class Galaxian {
+class Galaxian (private val context: Context){
 
     private var enemies = 0
     private var enemySize = 35f // random size
     private var enemyRect : Rect? = null
     private var destroyed = 0
+    private var status = ""
 
     private var shipW = 50f // random height
     private var shipH = 50f // random width
@@ -35,10 +37,10 @@ class Galaxian {
     )
 
     val enemyList = mutableListOf<Enemy>()
-    constructor (screenW : Float, screenH : Float, initES: Float) { // screenWidth, screenHeight, enemySpeed
+    constructor (context : Context, screenW : Float, screenH : Float, initES: Float) : this(context) { // screenWidth, screenHeight, enemySpeed
         enemies = Random.nextInt(5, 11) // between 5-10 enemies
         var spacing = (screenW / enemies) - enemySize
-        for (i in 0..enemies) {
+        for (i in 0..(enemies-1)) {
             enemyList.add(Enemy(x = spacing + (i * enemySize), y = 50f)) // y is some random top margin
         }
         setEnemyRect()
@@ -78,7 +80,7 @@ class Galaxian {
     fun updateEnemies(w : Float, h: Float) {
         // did enemy hit wall?
         for (enemy in enemyList) {
-            if (enemy.alive) continue // check enemy even alive otw it dont matter
+            if (!enemy.alive) continue // check enemy even alive otw it dont matter
             enemy.x += enemy.dx
             enemy.y += enemy.dy
 
@@ -126,7 +128,37 @@ class Galaxian {
             if (enemy.alive && Rect.intersects(enemy.rect, shipRect)) {
                 shipAlive = false
                 enemy.alive = false
+                status = "YOU LOST !!"
+                saveStats()
             }
         }
+    }
+
+    fun checkWin() : Boolean {
+        val allDead = enemyList.all { !it.alive } // are all enemies are dead
+        if (allDead) {
+            status = "YOU WON !!"
+            saveStats()
+        }
+        return allDead
+    }
+
+    private fun saveStats() {
+        val sp = context.getSharedPreferences("galaxian", Context.MODE_PRIVATE)
+        val best = sp.getInt("bestScore", 0)
+        if (destroyed > best) {
+            sp.edit().putInt("bestScore", destroyed).apply()
+        }
+        sp.edit().putString("status", status).apply()
+    }
+
+    fun getBestScore() : Int {
+        val sp = context.getSharedPreferences("galaxian", Context.MODE_PRIVATE)
+        return sp.getInt("bestScore", 0)
+    }
+
+    fun getStatus() : String? {
+        val sp = context.getSharedPreferences("galaxian", Context.MODE_PRIVATE)
+        return sp.getString("status", "")
     }
 }
