@@ -33,7 +33,9 @@ class Galaxian (private val context: Context){
         var dx : Float = 0f, // Horizonatal speed
         var dy : Float = 0f, // Vertical spped
         var rect : Rect = Rect(), // had to change it from Rect? = null cus was getting an error when doing rect.set 
-        var alive : Boolean = true
+        var alive : Boolean = true,
+        var falling : Boolean = false,
+        var delay : Int = Random.nextInt(0, 100)
     )
 
     val enemyList = mutableListOf<Enemy>()
@@ -97,6 +99,16 @@ class Galaxian (private val context: Context){
         // did enemy hit wall?
         for (enemy in enemyList) {
             if (!enemy.alive) continue // check enemy even alive otw it dont matter
+
+            if (!enemy.falling) {
+                enemy.delay--
+                if (enemy.delay <= 0) {
+                    enemy.falling = true // starts falling if delay runs out
+                } else {
+                    continue
+                }
+            }
+
             enemy.x += enemy.dx
             enemy.y += enemy.dy
 
