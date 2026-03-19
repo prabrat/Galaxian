@@ -41,7 +41,7 @@ class Galaxian (private val context: Context){
     constructor (context : Context, screenW : Float, screenH : Float, initES: Float) : this(context) { // screenWidth, screenHeight, enemySpeed
         enemies = Random.nextInt(5, 11) // between 5-10 enemies
         var spacing = (screenW / enemies) - enemySize
-        for (i in 0..(enemies-1)) {
+        for (i in 0..<enemies) {
             enemyList.add(Enemy(x = spacing + (i * enemySize), y = 50f)) // y is some random top margin
         }
         setEnemyRect()
