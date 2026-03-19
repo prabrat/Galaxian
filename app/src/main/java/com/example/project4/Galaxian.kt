@@ -8,7 +8,6 @@ class Galaxian (private val context: Context){
 
     private var enemies = 0
     private var enemySize = 35f // random size
-    private var enemyRect : Rect? = null
     private var destroyed = 0
     private var status = ""
     private var gameOver = false
@@ -38,25 +37,35 @@ class Galaxian (private val context: Context){
     )
 
     val enemyList = mutableListOf<Enemy>()
-    constructor (context : Context, screenW : Float, screenH : Float, initES: Float, er : Rect, sr : Rect) : this(context) {
-        // context, screenWidth, screenHeight, enemySpeed, enemyRect, shipRect
+    constructor (context : Context, screenW : Float, screenH : Float, initES: Float, shipWidth : Float, shipHeight : Float, enemyS : Float) : this(context) {
+        // context, screenWidth, screenHeight, enemySpeed, ...
+
+        enemySize = enemyS
+        shipW = shipWidth
+        shipH = shipHeight
+
         enemies = Random.nextInt(5, 11) // between 5-10 enemies
         var spacing = (screenW / enemies) - enemySize
         for (i in 0..<enemies) {
             enemyList.add(Enemy(x = spacing + (i * enemySize), y = 50f)) // y is some random top margin
         }
-        setEnemyRect(er)
+        setEnemyRect()
         setEnemySpeed(initES)
 
         setShipCord(screenW, screenH)
-        updateShipRect(sr)
+        updateShipRect()
         shipAlive = true
         fired = false
     }
 
-    fun setEnemyRect(rect : Rect) {
+    fun setEnemyRect() {
         for (enemy in enemyList) {
-            enemy.rect = rect
+            enemy.rect = Rect(
+                enemy.x.toInt(),
+                enemy.y.toInt(),
+                (enemy.x + enemySize).toInt(),
+                (enemy.y + enemySize).toInt()
+            )
         }
     }
 
@@ -71,12 +80,17 @@ class Galaxian (private val context: Context){
     }
 
     fun setShipCord(w : Float, h : Float) {
-        shipX = w / 2
+        shipX = (w / 2) - (shipW / 2)
         shipY = h - 50f
     }
 
-    fun updateShipRect(rect : Rect) {
-        shipRect = rect
+    fun updateShipRect() {
+        shipRect.set(
+            shipX.toInt(),
+            shipY.toInt(),
+            (shipX + shipW).toInt(),
+            (shipY + shipH).toInt()
+        )
     }
 
     fun updateEnemies(w : Float, h: Float) {
@@ -101,6 +115,10 @@ class Galaxian (private val context: Context){
                 (enemy.y + enemySize).toInt()
             )
         }
+    }
+
+    fun getShipRect() : Rect {
+        return shipRect
     }
 
     fun updateBullet() {
@@ -155,8 +173,8 @@ class Galaxian (private val context: Context){
         return allDead
     }
 
-    fun update(w: Float, h: Float, rect: Rect) {
-        updateShipRect(rect)
+    fun update(w: Float, h: Float) {
+        updateShipRect()
         updateEnemies(w, h)
         updateBullet()
         checkBulletHits()
