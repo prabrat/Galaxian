@@ -7,13 +7,13 @@ import kotlin.random.Random
 class Galaxian (private val context: Context){
 
     private var enemies = 0
-    private var enemySize = 35f // random size
+    private var enemySize = 0f // random size
     private var destroyed = 0
     private var status = ""
     private var gameOver = false
 
-    private var shipW = 50f // random height
-    private var shipH = 50f // random width
+    private var shipW = 0f // random height
+    private var shipH = 0f // random width
     private var shipX = 0f
     private var shipY = 0f
     private var shipAlive = true

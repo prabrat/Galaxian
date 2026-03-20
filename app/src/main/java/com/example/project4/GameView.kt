@@ -31,12 +31,17 @@ class GameView : View {
         enemy = BitmapFactory.decodeResource(resources, R.drawable.enemy)
         enemy = enemy.scale(w, h)
         galaxian = Galaxian(context)
+        galaxian  = Galaxian(context, width.toFloat(), height.toFloat(), height * .0003f,
+            ship.width.toFloat(), ship.height.toFloat(), enemy.height.toFloat())
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawBitmap(ship, (width - ship.width) / 2f, 2000f, paint)
+        //canvas.drawBitmap(ship, (width - ship.width) / 2f, 2000f, paint)
 
-
+        canvas.drawBitmap(ship, null, galaxian.getShipRect(), paint)
+        for (e in galaxian.enemyList) {
+            canvas.drawBitmap(enemy, null, e.rect, paint)
+        }
     }
 }
