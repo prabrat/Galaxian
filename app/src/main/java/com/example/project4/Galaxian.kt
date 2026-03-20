@@ -47,9 +47,9 @@ class Galaxian (private val context: Context){
         shipH = shipHeight
 
         enemies = Random.nextInt(5, 11) // between 5-10 enemies
-        var spacing = (screenW / enemies) - enemySize
+        var spacing = (screenW - (enemies * enemySize))/enemies
         for (i in 0..<enemies) {
-            enemyList.add(Enemy(x = spacing + (i * enemySize), y = 50f)) // y is some random top margin
+            enemyList.add(Enemy(x = spacing + (i * enemySize), y = 80f)) // y is some random top margin
         }
         setEnemyRect()
         setEnemySpeed(initES)
@@ -83,7 +83,7 @@ class Galaxian (private val context: Context){
 
     fun setShipCord(w : Float, h : Float) {
         shipX = (w / 2) - (shipW / 2)
-        shipY = h - 50f
+        shipY = h - 100f - shipH
     }
 
     fun updateShipRect() {
