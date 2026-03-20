@@ -54,11 +54,12 @@ class Galaxian (private val context: Context){
 
         setShipCord(screenW, screenH)
         updateShipRect()
-        bulletCenter = Point(((shipX + shipW) / 2).toInt(), shipY.toInt())
+        bulletCenter = Point((shipX + (shipW / 2)).toInt(), shipY.toInt())
         updateBullet()
         shipAlive = true
         fired = false
     }
+
 
     fun setEnemyRect() {
         for (enemy in enemyList) {
@@ -136,7 +137,7 @@ class Galaxian (private val context: Context){
     fun fireBullet() {
         if (!fired) {
             fired = true
-            bulletCenter.x = ((shipX + shipW) / 2).toInt()
+            bulletCenter.x = (shipX + (shipW / 2)).toInt()
             bulletCenter.y = shipY.toInt()
         }
     }
@@ -147,7 +148,7 @@ class Galaxian (private val context: Context){
 
         if ((bulletCenter.y - bulletRadius) <= 0) {
             fired = false
-            bulletCenter.x = ((shipX + shipW) / 2).toInt()
+            bulletCenter.x = (shipX + (shipW / 2)).toInt()
             bulletCenter.y = shipY.toInt()
         }
     }
@@ -161,7 +162,7 @@ class Galaxian (private val context: Context){
                 enemy.alive = false
                 destroyed++
                 fired = false
-                bulletCenter.x = ((shipX + shipW) / 2).toInt()
+                bulletCenter.x = (shipX + (shipW / 2)).toInt()
                 bulletCenter.y = shipY.toInt()
             }
         }
