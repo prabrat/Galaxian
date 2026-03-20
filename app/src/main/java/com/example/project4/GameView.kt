@@ -29,7 +29,7 @@ class GameView : View {
         ship = BitmapFactory.decodeResource(resources, R.drawable.ship)
         ship = ship.scale(w, h)
         enemy = BitmapFactory.decodeResource(resources, R.drawable.enemy)
-        enemy = enemy.scale(w, h)
+        enemy = enemy.scale(125, 125)
         galaxian = Galaxian(context)
         galaxian  = Galaxian(context, width.toFloat(), height.toFloat(), height * .0003f,
             ship.width.toFloat(), ship.height.toFloat(), enemy.height.toFloat())

@@ -46,7 +46,7 @@ class Galaxian (private val context: Context){
         shipW = shipWidth
         shipH = shipHeight
 
-        enemies = Random.nextInt(5, 11) // between 5-10 enemies
+        enemies = Random.nextInt(5,11) // between 5-10 enemies
         var spacing = (screenW - (enemies * enemySize))/ (enemies + 1)
         for (i in 0..<enemies) {
             enemyList.add(Enemy(x = spacing + (i * (enemySize + spacing)), y = 80f)) // y is some random top margin
