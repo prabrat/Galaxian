@@ -206,13 +206,15 @@ class Galaxian (private val context: Context){
     }
 
     private fun checkWin() {
-        val allDead = enemyList.all { !it.alive } // are all enemies are dead
-        if (allDead) {
-            status = "YOU WON !!"
-            gameOver = true
-            gameWon = true
-            saveScore()
+        for (enemy in enemyList) {
+            if (enemy.alive) {
+                return // clearly not won if an enemy is still aliv
+            }
         }
+        status = "YOU WON !!"
+        gameOver = true
+        gameWon = true
+        saveScore()
     }
 
     fun update(w: Float, h: Float) {
