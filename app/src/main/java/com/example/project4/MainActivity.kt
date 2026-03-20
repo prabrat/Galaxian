@@ -7,6 +7,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.duckhuntingv3.GameTimerTask
@@ -62,15 +63,29 @@ class MainActivity : AppCompatActivity() {
         gameView.postInvalidate()
     }
 
-    fun singleTap(id : Int) {
+    fun fire(id : Int) {
         pool.play(id, 1f, 1f, 1, 0, 1f)
+    }
+
+    fun updateShip(event : MotionEvent) {
+        galaxian.updateShipCord(event.x)
     }
 
     inner class TouchHandler : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e : MotionEvent) : Boolean {
             galaxian.fireBullet()
-            singleTap(fireSoundId)
+            fire(fireSoundId)
             return super.onSingleTapConfirmed(e)
+        }
+
+        override fun onScroll(
+            e1: MotionEvent?,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            updateShip(e2)
+            return super.onScroll(e1, e2, distanceX, distanceY)
         }
     }
 

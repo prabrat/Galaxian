@@ -36,8 +36,7 @@ class GameView : View {
         ship = ship.scale(w, h)
         enemy = BitmapFactory.decodeResource(resources, ENEMY)
         enemy = enemy.scale(125, 125)
-        galaxian = Galaxian(context)
-        galaxian  = Galaxian(context, width.toFloat(), height.toFloat(), height * .0001f,
+        galaxian  = Galaxian(context, width.toFloat(), height.toFloat(), height * .000075f,
             ship.width.toFloat(), ship.height.toFloat(), enemy.height.toFloat())
         galaxian.setDeltaTime(DELTA_TIME.toInt())
     }
@@ -46,20 +45,30 @@ class GameView : View {
         super.onDraw(canvas)
         //canvas.drawBitmap(ship, (width - ship.width) / 2f, 2000f, paint)
 
-        canvas.drawBitmap(ship, null, galaxian.getShipRect(), paint)
+        if (galaxian.getShipStatus()) {
+            canvas.drawBitmap(ship, null, galaxian.getShipRect(), paint)
+        }
         for (e in galaxian.enemyList) {
-            canvas.drawBitmap(enemy, null, e.rect, paint)
+            if (e.alive) {
+                canvas.drawBitmap(enemy, null, e.rect, paint)
+            }
         }
 
         val bullet = galaxian.getBulletCenter()
-        canvas.drawCircle(bullet!!.x.toFloat(), bullet.y.toFloat(), galaxian.getBulletRadius().toFloat(), paint)
-        if (galaxian.gameOver()) {
-            var newScore = galaxian.getBestScore()
-            score = if (newScore > score) newScore else score
+        if (!galaxian.gameOver()) {
+            canvas.drawCircle(bullet!!.x.toFloat(), bullet.y.toFloat(), galaxian.getBulletRadius().toFloat(), paint)
+        } else {
+            val currScore = galaxian.getCurrScore()
+            score = if (currScore > score) currScore else score
             status = galaxian.getStatus()
             paint.textSize = 60f
-            canvas.drawText(status, 50f, height/2f, paint)
-            canvas.drawText("# of enemies destroyed: ${score}", 50f, height/2f + 80f, paint)
+            canvas.drawText(status, 60f, height/2f, paint)
+            if (galaxian.getWinLoss()) { // true if won
+                canvas.drawText("Enemies Destroyed: ${currScore}", 60f, height/2f + 90f, paint)
+            } else {
+                canvas.drawText("# of enemies destroyed: ${currScore}", 60f, height/2f + 90f, paint)
+            }
+            canvas.drawText("Best Score: ${score}", 60f, height/2f + 180f, paint)
         }
     }
 
@@ -68,7 +77,7 @@ class GameView : View {
     }
 
     companion object {
-        val DELTA_TIME : Long = 100L
+        val DELTA_TIME : Long = 10L
         val SHIP : Int = R.drawable.ship
         val ENEMY : Int = R.drawable.enemy
     }
