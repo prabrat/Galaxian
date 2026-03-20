@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class TouchHandler : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e : MotionEvent) : Boolean {
+            galaxian.fireBullet()
             singleTap(fireSoundId)
             return super.onSingleTapConfirmed(e)
         }

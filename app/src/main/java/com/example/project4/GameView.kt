@@ -53,7 +53,6 @@ class GameView : View {
 
         val bullet = galaxian.getBulletCenter()
         canvas.drawCircle(bullet!!.x.toFloat(), bullet.y.toFloat(), galaxian.getBulletRadius().toFloat(), paint)
-
         if (galaxian.gameOver()) {
             var newScore = galaxian.getBestScore()
             score = if (newScore > score) newScore else score

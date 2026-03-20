@@ -151,7 +151,7 @@ class Galaxian (private val context: Context){
 
     fun updateBullet() {
         if (!fired) return
-        bulletCenter.y -= (bulletSpeed * deltaTime)
+        bulletCenter.y += (bulletSpeed * deltaTime)
 
         if ((bulletCenter.y - bulletRadius) <= 0) {
             fired = false
