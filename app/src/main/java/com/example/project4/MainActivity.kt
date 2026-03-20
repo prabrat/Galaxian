@@ -6,17 +6,32 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.duckhuntingv3.GameTimerTask
+import java.util.Timer
 
 class MainActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
+    private lateinit var galaxian: Galaxian
+    private var width : Int = 0
+    private var height : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val width : Int = resources.displayMetrics.widthPixels
-        val height : Int = resources.displayMetrics.heightPixels
+        width = resources.displayMetrics.widthPixels
+        height = resources.displayMetrics.heightPixels
 
         gameView = GameView(this, width, height)
+        galaxian = gameView.getGalaxian()
         setContentView(gameView)
+
+        var timer : Timer = Timer()
+        var task : GameTimerTask = GameTimerTask(this)
+        timer.schedule(task, 0L, GameView.DELTA_TIME)
     }
+
+    fun updateModel() {
+        galaxian.update(width.toFloat(), height.toFloat())
+    }
+
 }

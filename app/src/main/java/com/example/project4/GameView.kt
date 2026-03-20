@@ -26,13 +26,14 @@ class GameView : View {
         this.height = height
         val w = 250
         val h = 250
-        ship = BitmapFactory.decodeResource(resources, R.drawable.ship)
+        ship = BitmapFactory.decodeResource(resources, SHIP)
         ship = ship.scale(w, h)
-        enemy = BitmapFactory.decodeResource(resources, R.drawable.enemy)
+        enemy = BitmapFactory.decodeResource(resources, ENEMY)
         enemy = enemy.scale(125, 125)
         galaxian = Galaxian(context)
         galaxian  = Galaxian(context, width.toFloat(), height.toFloat(), height * .0003f,
             ship.width.toFloat(), ship.height.toFloat(), enemy.height.toFloat())
+        galaxian.setDeltaTime(DELTA_TIME.toInt())
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -46,5 +47,15 @@ class GameView : View {
 
         val bullet = galaxian.getBulletCenter()
         canvas.drawCircle(bullet!!.x.toFloat(), bullet.y.toFloat(), galaxian.getBulletRadius().toFloat(), paint)
+    }
+
+    fun getGalaxian() : Galaxian {
+        return galaxian
+    }
+
+    companion object {
+        val DELTA_TIME : Long = 100L
+        val SHIP : Int = R.drawable.ship
+        val ENEMY : Int = R.drawable.enemy
     }
 }

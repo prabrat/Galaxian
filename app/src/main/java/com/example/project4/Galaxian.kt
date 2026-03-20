@@ -23,6 +23,7 @@ class Galaxian (private val context: Context){
     private var bulletSpeed = -1 // neg is going up i guess
     private var bulletCenter : Point = Point()
     private var bulletRadius = 5
+    private var deltaTime = 0
 
 
     data class Enemy (
@@ -87,6 +88,12 @@ class Galaxian (private val context: Context){
         shipY = h - 100f - shipH
     }
 
+    fun setDeltaTime(dt : Int) {
+        if (dt > 0) {
+            deltaTime = dt
+        }
+    }
+
     fun updateShipRect() {
         shipRect.set(
             shipX.toInt(),
@@ -110,8 +117,8 @@ class Galaxian (private val context: Context){
                 }
             }
 
-            enemy.x += enemy.dx
-            enemy.y += enemy.dy
+            enemy.x += (enemy.dx * deltaTime)
+            enemy.y += (enemy.dy * deltaTime)
 
             if (enemy.x <= 0 || (enemy.x + enemySize) >= w) {
                 enemy.dx *= (-1) // flip direction
@@ -144,7 +151,7 @@ class Galaxian (private val context: Context){
 
     fun updateBullet() {
         if (!fired) return
-        bulletCenter.y += bulletSpeed
+        bulletCenter.y += (bulletSpeed * deltaTime)
 
         if ((bulletCenter.y - bulletRadius) <= 0) {
             fired = false
@@ -181,14 +188,13 @@ class Galaxian (private val context: Context){
         }
     }
 
-    fun checkWin() : Boolean {
+    fun checkWin() {
         val allDead = enemyList.all { !it.alive } // are all enemies are dead
         if (allDead) {
             status = "YOU WON !!"
             gameOver = true
             saveScore()
         }
-        return allDead
     }
 
     fun update(w: Float, h: Float) {
@@ -213,8 +219,12 @@ class Galaxian (private val context: Context){
         return sp.getInt("bestScore", 0)
     }
 
-    fun getStatus() : String {
+    fun getBanner() : String {
         return status
+    }
+
+    fun getStatus() : Boolean {
+        return gameOver
     }
 
     fun getBulletRadius() : Int {
