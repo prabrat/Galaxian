@@ -10,10 +10,10 @@ import android.view.View
 import androidx.core.graphics.scale
 
 class GameView : View {
-    private lateinit var ship : Bitmap
-    private lateinit var enemy : Bitmap
-    private lateinit var paint : Paint
-    private lateinit var galaxian: Galaxian
+    private var ship : Bitmap
+    private var enemy : Bitmap
+    private var paint : Paint
+    private var galaxian: Galaxian
     private var width: Int = 0
     private var height: Int = 0
 
@@ -43,5 +43,8 @@ class GameView : View {
         for (e in galaxian.enemyList) {
             canvas.drawBitmap(enemy, null, e.rect, paint)
         }
+
+        val bullet = galaxian.getBulletCenter()
+        canvas.drawCircle(bullet!!.x.toFloat(), bullet.y.toFloat(), galaxian.getBulletRadius().toFloat(), paint)
     }
 }

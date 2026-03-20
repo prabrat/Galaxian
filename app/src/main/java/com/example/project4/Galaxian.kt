@@ -3,6 +3,7 @@ package com.example.project4
 import android.content.Context
 import android.graphics.Rect
 import kotlin.random.Random
+import android.graphics.Point
 
 class Galaxian (private val context: Context){
 
@@ -18,13 +19,10 @@ class Galaxian (private val context: Context){
     private var shipY = 0f
     private var shipAlive = true
     private var shipRect  : Rect = Rect()
-
-    private var bulletSize = 5
-    private var bulletX = 0f
-    private var bulletY = 0f
     private var fired = false
-    private var bulletSpeed = -5f // neg is going up i guess
-    private var bulletRect : Rect = Rect()
+    private var bulletSpeed = -1 // neg is going up i guess
+    private var bulletCenter : Point = Point()
+    private var bulletRadius = 5
 
 
     data class Enemy (
@@ -48,7 +46,7 @@ class Galaxian (private val context: Context){
 
         enemies = Random.nextInt(5,11) // between 5-10 enemies
         var spacing = (screenW - (enemies * enemySize))/ (enemies + 1)
-        for (i in 0..<enemies) {
+        for (i in 0 until enemies) {
             enemyList.add(Enemy(x = spacing + (i * (enemySize + spacing)), y = 80f)) // y is some random top margin
         }
         setEnemyRect()
@@ -56,6 +54,8 @@ class Galaxian (private val context: Context){
 
         setShipCord(screenW, screenH)
         updateShipRect()
+        bulletCenter = Point(((shipX + shipW) / 2).toInt(), shipY.toInt())
+        updateBullet()
         shipAlive = true
         fired = false
     }
@@ -133,31 +133,36 @@ class Galaxian (private val context: Context){
         return shipRect
     }
 
+    fun fireBullet() {
+        if (!fired) {
+            fired = true
+            bulletCenter.x = ((shipX + shipW) / 2).toInt()
+            bulletCenter.y = shipY.toInt()
+        }
+    }
+
     fun updateBullet() {
         if (!fired) return
-        bulletY += bulletSpeed
+        bulletCenter.y += bulletSpeed
 
-        if (bulletY < 0) {
+        if ((bulletCenter.y - bulletRadius) <= 0) {
             fired = false
-            bulletX = shipX
-            bulletY = shipY
+            bulletCenter.x = ((shipX + shipW) / 2).toInt()
+            bulletCenter.y = shipY.toInt()
         }
-        bulletRect.set(
-            bulletX.toInt(),
-            bulletY.toInt(),
-            (bulletX + bulletSize).toInt(),
-            (bulletY + bulletSize).toInt()
-        )
     }
 
     fun checkBulletHits() {
         for (enemy in enemyList) {
-            if (enemy.alive && Rect.intersects(bulletRect, enemy.rect)) {
+            if (enemy.alive && enemy.rect.intersects(
+                bulletCenter.x - bulletRadius, bulletCenter.y - bulletRadius,
+                bulletCenter.x + bulletRadius, bulletCenter.y + bulletRadius
+            )) {
                 enemy.alive = false
                 destroyed++
                 fired = false
-                bulletX = shipX
-                bulletY = shipY
+                bulletCenter.x = ((shipX + shipW) / 2).toInt()
+                bulletCenter.y = shipY.toInt()
             }
         }
     }
@@ -209,6 +214,14 @@ class Galaxian (private val context: Context){
 
     fun getStatus() : String {
         return status
+    }
+
+    fun getBulletRadius() : Int {
+        return bulletRadius
+    }
+
+    fun getBulletCenter() : Point? {
+        return bulletCenter
     }
 
     fun gameOver() : Boolean {
