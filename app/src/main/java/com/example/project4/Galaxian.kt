@@ -38,10 +38,10 @@ class Galaxian (private val context: Context){
     )
 
     val enemyList = mutableListOf<Enemy>()
-    constructor (context : Context, screenW : Float, screenH : Float, initES: Float, shipWidth : Float, shipHeight : Float, enemyS : Float) : this(context) {
+    constructor (context : Context, screenW : Float, screenH : Float, initES: Float, shipWidth : Float, shipHeight : Float, eSize : Float) : this(context) {
         // context, screenWidth, screenHeight, enemySpeed, ...
 
-        enemySize = enemyS
+        enemySize = eSize
         shipW = shipWidth
         shipH = shipHeight
 
