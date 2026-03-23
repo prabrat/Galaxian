@@ -13,6 +13,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.duckhuntingv3.GameTimerTask
 import java.util.Timer
 
+// Dajan Ahluwalia UID: 119675205
+// Prabhat Jain UID: 119662335
+
 class MainActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
     private lateinit var galaxian: Galaxian

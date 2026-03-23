@@ -33,7 +33,7 @@ class GameView : View {
         ship = BitmapFactory.decodeResource(resources, SHIP)
         ship = ship.scale(175, 175)
         enemy = BitmapFactory.decodeResource(resources, ENEMY)
-        enemy = enemy.scale(100, 100)
+        enemy = enemy.scale(90, 90)
         galaxian  = Galaxian(context, width.toFloat(), height.toFloat(), height * .000075f,
             ship.width.toFloat(), ship.height.toFloat(), enemy.height.toFloat())
         galaxian.setDeltaTime(DELTA_TIME.toInt())

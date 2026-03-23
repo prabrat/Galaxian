@@ -50,7 +50,8 @@ class Galaxian (private val context: Context){
     constructor (context : Context, screenW : Float, screenH : Float, initES: Float, shipWidth : Float, shipHeight : Float, eSize : Float) : this(context) {
         // context, screenWidth, screenHeight, enemySpeed, ...
 
-        enemySize = eSize
+        //enemySize = eSize
+        enemySize = eSize + (200 / enemies)
         shipW = shipWidth
         shipH = shipHeight
         screenWidth = screenW
@@ -63,6 +64,8 @@ class Galaxian (private val context: Context){
         }
         setEnemyRect()
         setEnemySpeed(initES)
+        enemyList.shuffle()
+        setDelay()
 
         setShipCord(screenW, screenH)
         updateShipRect()
@@ -75,7 +78,7 @@ class Galaxian (private val context: Context){
     fun setDelay() {
         for (enemy in enemyList) {
             enemy.delay += prevDelay
-            prevDelay += 5
+            prevDelay += Random.nextInt(20, 67)
         }
     }
 
