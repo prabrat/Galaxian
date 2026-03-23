@@ -6,10 +6,11 @@ import kotlin.random.Random
 import android.graphics.Point
 import kotlin.math.min
 import kotlin.math.max
+import kotlin.random.nextInt
 
 class Galaxian (private val context: Context){
 
-    private var enemies = 0
+    private val enemies = Random.nextInt(5, 11) // 5 - 10 enemies
     private var enemySize = 0f // random size
     private var destroyed = 0
     private var status = ""
@@ -34,8 +35,10 @@ class Galaxian (private val context: Context){
     data class Enemy (
         var x : Float,
         var y : Float,
-        var dx : Float = 0f, // Horizonatal speed
-        var dy : Float = 0f, // Vertical spped
+        var og_x: Float,
+        var og_y: Float,
+        var dx : Float = 0f, // Horizontal speed
+        var dy : Float = 0f, // Vertical speed
         var rect : Rect = Rect(), // had to change it from Rect? = null cus was getting an error when doing rect.set 
         var alive : Boolean = true,
         var falling : Boolean = false,
@@ -51,11 +54,11 @@ class Galaxian (private val context: Context){
         shipH = shipHeight
         screenWidth = screenW
         screenHeight = screenH
-
-        enemies = Random.nextInt(5,11) // between 5-10 enemies
-        var spacing = (screenW - (enemies * enemySize))/ (enemies + 1)
+        var spacing = ((screenW) - (enemies * enemySize)) / (enemies + 1)
         for (i in 0 until enemies) {
-            enemyList.add(Enemy(x = spacing + (i * (enemySize + spacing)), y = 80f)) // y is some random top margin
+            var x = (spacing) + (i * (enemySize + spacing))
+            var y = 80f
+            enemyList.add(Enemy(x = x, y = y, og_x = x, og_y = y)) // y is some random top margin
         }
         setEnemyRect()
         setEnemySpeed(initES)
@@ -137,7 +140,8 @@ class Galaxian (private val context: Context){
             }
 
             if (enemy.y > h) {
-                enemy.y = 0f
+                enemy.y = enemy.og_y
+                enemy.x = enemy.og_x
             }
 
             enemy.rect.set(

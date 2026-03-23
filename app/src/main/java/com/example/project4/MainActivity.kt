@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     fun updateModel() {
         if (!galaxian.gameOver()) {
-            galaxian.update(width.toFloat(), height.toFloat())
+           galaxian.update(width.toFloat(), height.toFloat())
         } else {
             gameView.postInvalidate()
         }
