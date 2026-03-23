@@ -12,6 +12,7 @@ class Galaxian (private val context: Context){
 
     private val enemies = Random.nextInt(5, 11) // 5 - 10 enemies
     private var enemySize = 0f // random size
+    private var prevDelay = 0
     private var destroyed = 0
     private var status = ""
     private var gameOver = false
@@ -71,6 +72,12 @@ class Galaxian (private val context: Context){
         fired = false
     }
 
+    fun setDelay() {
+        for (enemy in enemyList) {
+            enemy.delay += prevDelay
+            prevDelay += 5
+        }
+    }
 
     fun setEnemyRect() {
         for (enemy in enemyList) {
